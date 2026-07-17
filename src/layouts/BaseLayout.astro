@@ -92,8 +92,7 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
       }
 
       // click ripples: a burst of rings. Clipped to the clicked element when it's
-      // interactive, otherwise to the page's content column, so rings vanish at the
-      // margins like they slid behind something.
+      // interactive; background clicks ripple freely across the whole viewport.
       if (!reduced) {
         document.addEventListener('pointerdown', (e) => {
           if (e.button !== 0) return;
@@ -102,24 +101,13 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
           const wrap = document.createElement('div');
           wrap.className = 'ripple-wrap';
 
-          let rect = null;
-          let rounded = '';
           if (target) {
-            rect = target.getBoundingClientRect();
-            rounded = ' round 10px';
-          } else {
-            const main = document.querySelector('main.page');
-            if (main) {
-              const m = main.getBoundingClientRect();
-              rect = { top: 0, bottom: window.innerHeight, left: m.left, right: m.right };
-            }
-          }
-          if (rect) {
+            const rect = target.getBoundingClientRect();
             const top = Math.max(0, rect.top);
             const right = Math.max(0, window.innerWidth - rect.right);
             const bottom = Math.max(0, window.innerHeight - rect.bottom);
             const left = Math.max(0, rect.left);
-            wrap.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px${rounded})`;
+            wrap.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px round 10px)`;
           }
 
           const rings = 3;
@@ -128,11 +116,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
             dot.className = target && i === 0 ? 'ripple hit' : 'ripple';
             dot.style.left = `${e.clientX}px`;
             dot.style.top = `${e.clientY}px`;
-            dot.style.animationDelay = `${i * 110}ms`;
+            dot.style.animationDelay = `${i * 140}ms`;
             wrap.appendChild(dot);
           }
           document.body.appendChild(wrap);
-          setTimeout(() => wrap.remove(), 700 + rings * 110);
+          setTimeout(() => wrap.remove(), 1050 + rings * 140);
         });
       }
     </script>

@@ -1,25 +1,24 @@
 {
-  "_note": "TODO(raj): DRAFT picks so you can see the layout. Swap titles and point image at real cover art in public/images/recs/.",
+  "_note": "TODO(raj): 'Sunny Day' still needs its artist filled in.",
   "music": [
-    { "title": "Thinking About You", "image": "/images/recs/music/thinkingaboutyou.jpg" },
-    { "title": "I Miss You", "image": "/images/recs/music/imissyou.jpg" },
-    { "title": "I Wonder", "image": "/images/recs/music/iwonder.png" },
-    { "title": "Language", "image": "/images/recs/music/language.jpg" },
-    { "title": "Weekend Friend", "image": "/images/recs/music/weekendfriend.jpg" },
-    { "title": "Creep", "image": "/images/recs/music/creep.png" },
-    { "title": "Cherry Waves", "image": "/images/recs/music/cherrywaves.jpg" },
-    { "title": "Cinema", "image": "/images/recs/music/cinema.jpg" },
-    { "title": "Stay", "image": "/images/recs/music/stay.jpg" },
-    { "title": "Good Days", "image": "/images/recs/music/gooddays.png" },
-    { "title": "Sunny Day", "image": "/images/recs/music/sunnyday.png" },
-    { "title": "Bags", "image": "/images/recs/music/bags.jpg" },
-    { "title": "Jungle", "image": "/images/recs/music/jungle.jpg" },
-    { "title": "Latch", "image": "/images/recs/music/latch.jpg" },
-    { "title": "I tooka pill in ibiza", "image": "/images/recs/music/itookapillinibiza.jpg" },
-    { "title": "Still Into You", "image": "/images/recs/music/stillintoyou.jpg" },
-    { "title": "Check", "image": "/images/recs/music/check.jpg" },
-    { "title": "Thinking Bout You", "image": "/images/recs/music/thinkingboutyou.jpg" }
-    
+    { "title": "Thinking About You", "artist": "Calvin Harris", "image": "/images/recs/music/thinkingaboutyou.jpg" },
+    { "title": "I Miss You", "artist": "blink-182", "image": "/images/recs/music/imissyou.jpg" },
+    { "title": "I Wonder", "artist": "Kanye West", "image": "/images/recs/music/iwonder.png" },
+    { "title": "Language", "artist": "Porter Robinson", "image": "/images/recs/music/language.jpg" },
+    { "title": "Weekend Friend", "artist": "Goth Babe", "image": "/images/recs/music/weekendfriend.jpg" },
+    { "title": "Creep", "artist": "Radiohead", "image": "/images/recs/music/creep.png" },
+    { "title": "Cherry Waves", "artist": "Deftones", "image": "/images/recs/music/cherrywaves.jpg" },
+    { "title": "Cinema", "artist": "Benny Benassi", "image": "/images/recs/music/cinema.jpg" },
+    { "title": "Stay", "artist": "FISHER", "image": "/images/recs/music/stay.jpg" },
+    { "title": "Good Days", "artist": "SZA", "image": "/images/recs/music/gooddays.png" },
+    { "title": "Sunny Day", "artist": "", "image": "/images/recs/music/sunnyday.png" },
+    { "title": "Bags", "artist": "Clairo", "image": "/images/recs/music/bags.jpg" },
+    { "title": "Jungle", "artist": "Drake", "image": "/images/recs/music/jungle.jpg" },
+    { "title": "Latch", "artist": "Disclosure", "image": "/images/recs/music/latch.jpg" },
+    { "title": "I Took a Pill in Ibiza", "artist": "Mike Posner", "image": "/images/recs/music/itookapillinibiza.jpg" },
+    { "title": "Still Into You", "artist": "Paramore", "image": "/images/recs/music/stillintoyou.jpg" },
+    { "title": "Check", "artist": "Young Thug", "image": "/images/recs/music/check.jpg" },
+    { "title": "Summer Games", "artist": "Drake", "image": "/images/recs/music/summergames.png" }
   ],
   "anime": [
     { "title": "Naruto", "image": "/images/recs/anime/naruto.jpg" },
@@ -34,12 +33,5 @@
     { "title": "Mob Psycho 100", "image": "/images/recs/anime/mobpsycho.jpg" },
     { "title": "Perfect Blue", "image": "/images/recs/anime/perfectblue.jpg" },
     { "title": "Spirited Away", "image": "/images/recs/anime/spiritedaway.jpg" }
-    
-  ],
-  "movies": [
-    { "title": "Interstellar", "image": "/images/recs/movie.svg" },
-    { "title": "Whiplash", "image": "/images/recs/movie.svg" },
-    { "title": "Spider-Man: Into the Spider-Verse", "image": "/images/recs/movie.svg" },
-    { "title": "The Social Network", "image": "/images/recs/movie.svg" }
   ]
 }

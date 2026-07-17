@@ -8,7 +8,6 @@ import recs from '../data/recs.json';
 const groups = [
   { label: 'Music', items: recs.music, shape: 'square' },
   { label: 'Anime', items: recs.anime, shape: 'poster' },
-  { label: 'Movies', items: recs.movies, shape: 'poster' },
 ];
 ---
 
@@ -95,6 +94,7 @@ const groups = [
                   <li class="c-card">
                     <img src={c.image} alt="" width="200" height={g.shape === 'square' ? 200 : 300} loading="lazy" />
                     <p class="c-title">{c.title}</p>
+                    {c.artist && <p class="c-artist">{c.artist}</p>}
                   </li>
                 ))}
               </ul>
@@ -289,5 +289,11 @@ const groups = [
     font-weight: 700;
     font-size: 0.95rem;
     line-height: 1.3;
+  }
+  .c-artist {
+    margin: 0.15rem 0 0;
+    font-size: 0.8rem;
+    line-height: 1.25;
+    color: var(--text-soft);
   }
 </style>
