@@ -1,0 +1,79 @@
+---
+// ProjectCard: featured project as a clickable feature card (home page).
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  wide?: boolean;
+}
+const { project, wide = false } = Astro.props;
+const { title, summary, dates, stack } = project.data;
+---
+
+<article class:list={['card', { wide }]}>
+  <p class="annotation">{dates}</p>
+  <h3>
+    <a href={`/projects/${project.id}/`}>
+      {title}
+      <span class="arrow" aria-hidden="true">→</span>
+    </a>
+  </h3>
+  <p class="summary">{summary}</p>
+  <p class="pills-row">
+    {stack.slice(0, wide ? 6 : 4).map((t) => <span class="pill">{t}</span>)}
+  </p>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.5rem 1.6rem 1.3rem;
+    transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+  }
+  .card:hover {
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px -18px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .wide {
+    grid-column: 1 / -1;
+  }
+  .annotation {
+    margin: 0 0 0.5rem;
+  }
+  h3 {
+    margin-bottom: 0.35rem;
+    font-size: 1.3rem;
+  }
+  /* the whole card is the click target */
+  h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  h3 a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .card:hover h3 a {
+    color: var(--accent-bright);
+  }
+  .arrow {
+    display: inline-block;
+    transition: transform 180ms ease;
+  }
+  .card:hover .arrow {
+    transform: translateX(5px);
+  }
+  .summary {
+    margin: 0 0 0.9rem;
+    color: var(--text-soft);
+  }
+  .pills-row {
+    margin: 0;
+    line-height: 1;
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+// Blog: two feeds behind the flip — engineering notes and the cooking log.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionSwitcher from '../../components/SectionSwitcher.astro';
+import { readingTime } from '../../utils/readingTime.js';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const cooks = (await getCollection('cooks', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+
+<BaseLayout
+  title="Blog — Pratyush Raj Gupta"
+  description="Engineering notes and things I've cooked."
+>
+  <h1>Blog</h1>
+  <p class="lede">Engineering notes on one side, things I've cooked on the other.</p>
+
+  <SectionSwitcher id="blog-switch" labelA="Notes" labelB="Cooks">
+    <div slot="a">
+      {posts.length === 0 && <p>Nothing logged yet. First entry coming soon.</p>}
+      {
+        posts.map((post) => (
+          <article class="ledger row">
+            <p class="annotation">
+              {fmt(post.data.date)}
+              <br />
+              {readingTime(post.body ?? '')} min read
+            </p>
+            <div>
+              <h2>
+                <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+              </h2>
+              <p class="summary">{post.data.summary}</p>
+              {post.data.tags.length > 0 && (
+                <p class="annotation tags">{post.data.tags.join(' · ')}</p>
+              )}
+            </div>
+          </article>
+        ))
+      }
+      <p class="annotation rss"><a href="/rss.xml">RSS feed</a></p>
+    </div>
+    <div slot="b">
+      {cooks.length === 0 && <p>Nothing cooked yet. The pan is heating up.</p>}
+      <div class="cook-grid">
+        {
+          cooks.map((cook) => (
+            <article class="cook-card">
+              <a href={`/cooks/${cook.id}/`}>
+                <img src={cook.data.image} alt={cook.data.title} width="640" height="400" loading="lazy" />
+                <div class="cook-body">
+                  <p class="annotation">{fmt(cook.data.date)}</p>
+                  <h2>{cook.data.title}</h2>
+                  <p class="annotation macros">
+                    {cook.data.macros.calories} kcal · {cook.data.macros.protein}g P ·
+                    {' '}{cook.data.macros.carbs}g C · {cook.data.macros.fat}g F
+                  </p>
+                </div>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </SectionSwitcher>
+</BaseLayout>
+
+<style>
+  .lede {
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    margin-bottom: 2.2rem;
+  }
+  .row {
+    border-top: 1px solid var(--line);
+    padding-block: 1.4rem;
+  }
+  .row .annotation {
+    margin: 0 0 0.4rem;
+    line-height: 1.9;
+  }
+  h2 {
+    font-size: 1.3rem;
+    margin-bottom: 0.25rem;
+  }
+  .row h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .row h2 a:hover {
+    color: var(--accent);
+  }
+  .summary {
+    margin: 0 0 0.4rem;
+    color: var(--text-soft);
+  }
+  .tags {
+    color: var(--accent);
+  }
+  .rss {
+    margin-top: 2.5rem;
+  }
+
+  .cook-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+  @media (min-width: 44rem) {
+    .cook-grid {
+      grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    }
+  }
+  .cook-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 180ms ease, transform 180ms ease;
+  }
+  .cook-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+    transform: translateY(-3px);
+  }
+  .cook-card a {
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+  .cook-card img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--line);
+  }
+  .cook-body {
+    padding: 1rem 1.2rem 1.1rem;
+  }
+  .cook-body .annotation {
+    margin: 0 0 0.3rem;
+  }
+  .cook-body h2 {
+    font-size: 1.1rem;
+    margin-bottom: 0.35rem;
+  }
+  .cook-card:hover h2 {
+    color: var(--accent-bright);
+  }
+  .macros {
+    color: var(--accent);
+  }
+</style>

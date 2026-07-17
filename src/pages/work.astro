@@ -1,0 +1,174 @@
+---
+// Work: flip between full experience cards and the project log; skills below.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectEntry from '../components/ProjectEntry.astro';
+import SectionSwitcher from '../components/SectionSwitcher.astro';
+import experience from '../data/experience.json';
+import skills from '../data/skills.json';
+import site from '../data/site.json';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Work — Pratyush Raj Gupta"
+  description="Experience and the full project log: backend services, data pipelines, and applied ML systems."
+>
+  <h1>Work</h1>
+  <p class="lede">
+    Four years of internships, research, and side systems. The same story is in the
+    <a href={site.resume}>résumé</a> if you'd rather have a PDF.
+  </p>
+
+  <SectionSwitcher id="work-switch" labelA="Experience" labelB="Project log">
+    <div slot="a" class="cards">
+      {
+        experience.map((job) => (
+          <article class="card">
+            <div class="card-head">
+              <h3>
+                {job.role} · {job.org}
+                {job.leadership && <span class="annotation flag"> leadership</span>}
+              </h3>
+              <p class="annotation">{job.dates} · {job.location}</p>
+            </div>
+            <p class="summary">{job.summary}</p>
+            {job.details.length > 0 && (
+              <ul class="details">
+                {job.details.map((d) => (
+                  <li>{d}</li>
+                ))}
+              </ul>
+            )}
+            {job.tech.length > 0 && (
+              <p class="pills-row">
+                {job.tech.map((t) => (
+                  <span class="pill">{t}</span>
+                ))}
+              </p>
+            )}
+          </article>
+        ))
+      }
+    </div>
+    <div slot="b">
+      {projects.map((p) => <ProjectEntry project={p} />)}
+    </div>
+  </SectionSwitcher>
+
+  <hr class="axis" />
+
+  <section aria-labelledby="skills">
+    <h2 id="skills">Instruments</h2>
+    <dl class="skills">
+      {
+        skills.map((s) => (
+          <div class="ledger row">
+            <dt class="annotation">{s.group}</dt>
+            <dd>
+              <p class="note">{s.note}</p>
+              <p class="items">{s.items.join(' · ')}</p>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+</BaseLayout>
+
+<style>
+  .lede {
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    margin-bottom: 2.6rem;
+  }
+  h2 {
+    margin-bottom: 1.6rem;
+  }
+
+  .cards {
+    display: grid;
+    gap: 1.1rem;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.3rem 1.5rem 1.1rem;
+    transition: border-color 160ms ease, transform 160ms ease;
+  }
+  .card:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    transform: translateY(-2px);
+  }
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.5rem 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.4rem;
+  }
+  .card-head h3,
+  .card-head .annotation {
+    margin: 0;
+  }
+  .flag {
+    color: var(--accent);
+  }
+  .summary {
+    margin: 0 0 0.7rem;
+    font-size: 1.05rem;
+  }
+  .details {
+    list-style: none;
+    margin: 0 0 0.9rem;
+    padding: 0;
+  }
+  .details li {
+    position: relative;
+    padding-left: 1.1rem;
+    margin-bottom: 0.35rem;
+    color: var(--text-soft);
+    max-width: var(--measure);
+  }
+  .details li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+  .pills-row {
+    margin: 0;
+    line-height: 1;
+  }
+
+  .skills {
+    margin: 0;
+  }
+  .row {
+    border-top: 1px solid var(--line);
+    padding-block: 1.1rem;
+  }
+  .row dt,
+  .row dd {
+    margin: 0;
+  }
+  .note {
+    margin: 0 0 0.3rem;
+    color: var(--text-soft);
+    font-style: italic;
+  }
+  .items {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text);
+  }
+</style>

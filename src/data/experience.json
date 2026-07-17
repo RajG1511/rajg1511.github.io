@@ -1,0 +1,84 @@
+[
+  {
+    "role": "ML Developer",
+    "org": "Polara Labs",
+    "location": "College Station, TX",
+    "dates": "Mar 2026 – present",
+    "summary": "I build the service that grades SOC 2 audit evidence so a human doesn't have to read every artifact.",
+    "tech": [
+      "Python",
+      "FastAPI",
+      "Docker",
+      "LLMs"
+    ],
+    "details": [
+      "Engineered an AI-driven FastAPI/Docker microservice that evaluates SOC 2 audit evidence, using semantic matching, hybrid scoring, and gated LLM adjudication to automate audit review.",
+      "Delivered 100% accuracy on 88 test artifacts with sub-3s latency, enabling real-time feedback and cutting costs."
+    ]
+  },
+  {
+    "role": "Software Engineering Intern",
+    "org": "Region 10 ESC",
+    "location": "Richardson, TX",
+    "dates": "May 2025 – Aug 2025",
+    "summary": "Built a tool that turns plain English questions into production SQL, for staff who don't write SQL.",
+    "tech": [
+      "Python",
+      "SQL",
+      "Apache Iceberg",
+      "Snowflake",
+      "AWS S3",
+      "Oracle"
+    ],
+    "details": [
+      "Architected a RAG-powered natural-language-to-SQL interface that converted business questions into production-ready queries and results, reducing data request turnaround by 50% for non-technical users.",
+      "Engineered a multi-cloud data lakehouse architecture using Apache Iceberg, automating Snowflake exports directly to AWS S3 and integrating with Oracle Autonomous Database."
+    ]
+  },
+  {
+    "role": "Software Engineering Intern",
+    "org": "Region 10 ESC",
+    "location": "Richardson, TX",
+    "dates": "May 2024 – Aug 2024",
+    "summary": "First internship. ETL pipelines and a funding dashboard that 10+ Texas school districts use.",
+    "tech": [
+      "PL/SQL",
+      "Oracle APEX",
+      "JavaScript",
+      "SQL"
+    ],
+    "details": [
+      "Created an API-to-Oracle Cloud ETL pipeline using PL/SQL, reducing processing time by 70%.",
+      "Built a full-stack attendance app serving 10+ school districts using a PL/SQL logic engine for funding eligibility.",
+      "Engineered an Oracle APEX funding projection dashboard using JavaScript and SQL for 10+ school districts."
+    ]
+  },
+  {
+    "role": "Undergraduate Researcher",
+    "org": "Texas Water Observatory, TAMU",
+    "location": "College Station, TX",
+    "dates": "Aug 2023 – Dec 2023",
+    "summary": "Turned river sensor data into a real pipeline instead of hand-edited CSVs.",
+    "tech": [
+      "Python",
+      "PostgreSQL"
+    ],
+    "details": [
+      "Architected a Python/PostgreSQL pipeline replacing manual CSV workflows, increasing processing throughput by 95%.",
+      "Implemented automated integrity validations and real-time outlier alerting for high-fidelity telemetry reporting."
+    ]
+  },
+  {
+    "role": "President",
+    "org": "Beta Tau Omega Engineering Fraternity",
+    "location": "College Station, TX",
+    "dates": "Aug 2024 – May 2025",
+    "leadership": true,
+    "summary": "Ran the fraternity for a year: 40% membership growth on a $10K+ annual budget.",
+    "tech": [],
+    "details": [
+      "Spearheaded 40% membership growth and managed a $10K+ annual operating budget.",
+      "Directed philanthropy and technical marketing initiatives, earning recognition in the Gastric Cancer Foundation magazine."
+    ]
+  }
+]

@@ -1,0 +1,94 @@
+---
+// SiteHeader: wordmark + primary nav; current page marked with a leaf-green tick.
+import site from '../data/site.json';
+
+const links = [
+  { href: '/work/', label: 'Work' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/about/', label: 'About' },
+];
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path === href || path.startsWith(href);
+---
+
+<header class="page">
+  <nav aria-label="Primary">
+    <a class="wordmark" href="/">{site.shortName}</a>
+    <ul>
+      {
+        links.map(({ href, label }) => (
+          <li>
+            <a class="navlink" href={href} aria-current={isCurrent(href) ? 'page' : undefined}>
+              {label}
+            </a>
+          </li>
+        ))
+      }
+      <li>
+        <a class="navlink" href={site.resume}>Résumé</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    padding-block: 1.4rem;
+    border-bottom: 1px solid var(--line);
+  }
+  nav {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-weight: 620;
+    font-size: 1.15rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  ul {
+    display: flex;
+    gap: clamp(0.9rem, 3vw, 1.8rem);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .navlink {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    text-decoration: none;
+    padding-block: 0.2rem;
+    position: relative;
+  }
+  .navlink::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.35rem;
+    height: 2px;
+    background: var(--accent-bright);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 220ms ease;
+  }
+  .navlink:hover {
+    color: var(--text);
+  }
+  .navlink:hover::after,
+  .navlink[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  .navlink[aria-current='page'] {
+    color: var(--text);
+  }
+</style>

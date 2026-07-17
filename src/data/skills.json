@@ -1,0 +1,22 @@
+[
+  {
+    "group": "Languages",
+    "note": "Python and Java are the daily drivers; SQL/PL-SQL from two years of Oracle work.",
+    "items": ["Python", "Java", "C++", "SQL", "PL/SQL", "JavaScript", "TypeScript", "C#", "Swift", "Ruby"]
+  },
+  {
+    "group": "Backend & cloud",
+    "note": "Most production time on AWS and Oracle Cloud; containers by default.",
+    "items": ["AWS (S3, RDS, Lambda, EC2)", "GCP", "Oracle Cloud", "Docker", "Kubernetes", "Spring Boot", "Node.js", "REST APIs"]
+  },
+  {
+    "group": "Data & AI",
+    "note": "Pipelines and stores first, models where the system needs them.",
+    "items": ["Snowflake", "Apache Iceberg", "Spark", "PostgreSQL", "MySQL", "Redis", "pgvector", "PyTorch", "Pandas", "RAG pipelines", "NumPy"]
+  },
+  {
+    "group": "Tools",
+    "note": "CI/CD on GitHub Actions; infrastructure as code with Terraform.",
+    "items": ["Git", "GitHub Actions", "CI/CD", "Terraform", "Linux", "Agile/Scrum", "React", "Jira"]
+  }
+]

@@ -1,0 +1,48 @@
+---
+// SiteFooter: contact links over a ticked chart-axis rule.
+import site from '../data/site.json';
+const year = new Date().getFullYear();
+---
+
+<footer>
+  <div class="page inner">
+    <p class="annotation">
+      {site.location} · <a href={`mailto:${site.email}`}>{site.email}</a> ·
+      <a href={site.github}>GitHub</a> · <a href={site.linkedin}>LinkedIn</a>
+    </p>
+    <p class="annotation colophon">© {year} {site.name} · built with Astro · no trackers</p>
+  </div>
+</footer>
+
+<style>
+  footer {
+    border-top: 1px solid var(--line);
+    /* tick marks along the top edge, like a chart axis */
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--line) 0 1px,
+      transparent 1px 4rem
+    );
+    background-size: 100% 6px;
+    background-repeat: no-repeat;
+  }
+  .inner {
+    padding-block: 1.6rem 2.2rem;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .annotation a {
+    color: var(--text-soft);
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 0.8rem;
+  }
+  .annotation a:hover {
+    color: var(--accent);
+  }
+  .colophon {
+    color: color-mix(in srgb, var(--text-soft) 75%, transparent);
+  }
+</style>

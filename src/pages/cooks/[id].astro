@@ -1,0 +1,129 @@
+---
+// Cook detail page: photo, macros, ingredients, steps. Nothing fancier than that.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const cooks = await getCollection('cooks', ({ data }) => !data.draft);
+  return cooks.map((cook) => ({ params: { id: cook.id }, props: { cook } }));
+}
+
+const { cook } = Astro.props;
+const { title, date, image, macros, ingredients, steps } = cook.data;
+const { Content } = await render(cook);
+const fmt = date.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<BaseLayout title={`${title} — Pratyush Raj Gupta`} description={`${title}: ${macros.calories} kcal, ${macros.protein}g protein.`}>
+  <article>
+    <header>
+      <p class="annotation">{fmt}</p>
+      <h1>{title}</h1>
+    </header>
+
+    <img class="photo" src={image} alt={title} width="640" height="400" />
+
+    <dl class="macros" aria-label="Macros">
+      <div><dt class="annotation">Calories</dt><dd>{macros.calories}</dd></div>
+      <div><dt class="annotation">Protein</dt><dd>{macros.protein}g</dd></div>
+      <div><dt class="annotation">Carbs</dt><dd>{macros.carbs}g</dd></div>
+      <div><dt class="annotation">Fat</dt><dd>{macros.fat}g</dd></div>
+    </dl>
+
+    <div class="cols">
+      <section aria-labelledby="ingredients">
+        <h2 id="ingredients">Ingredients</h2>
+        <ul>
+          {ingredients.map((i) => <li>{i}</li>)}
+        </ul>
+      </section>
+      <section aria-labelledby="steps">
+        <h2 id="steps">Steps</h2>
+        <ol>
+          {steps.map((s) => <li>{s}</li>)}
+        </ol>
+      </section>
+    </div>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <p class="back"><a href="/blog/">← Back to the blog</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  header .annotation {
+    margin-bottom: 0.5rem;
+  }
+  .photo {
+    display: block;
+    width: 100%;
+    max-width: 40rem;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    margin-bottom: 1.6rem;
+  }
+  .macros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    margin: 0 0 2.2rem;
+  }
+  .macros div {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.6rem 1.1rem;
+    min-width: 6.5rem;
+  }
+  .macros dt {
+    margin: 0 0 0.15rem;
+  }
+  .macros dd {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent-bright);
+  }
+  .cols {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  @media (min-width: 44rem) {
+    .cols {
+      grid-template-columns: 1fr 1.4fr;
+    }
+  }
+  .cols h2 {
+    font-size: 1.2rem;
+  }
+  .cols ul,
+  .cols ol {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .cols li {
+    margin-bottom: 0.4rem;
+  }
+  .cols ol li::marker {
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .prose {
+    color: var(--text-soft);
+    font-style: italic;
+  }
+  .back {
+    margin-top: 2.5rem;
+  }
+</style>

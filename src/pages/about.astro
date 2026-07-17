@@ -1,0 +1,293 @@
+---
+// About: the human page — bio, hobbies, bookshelf. TODO(raj) markers stay visible
+// until Raj fills them in; nothing here gets invented.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import site from '../data/site.json';
+import recs from '../data/recs.json';
+
+const groups = [
+  { label: 'Music', items: recs.music, shape: 'square' },
+  { label: 'Anime', items: recs.anime, shape: 'poster' },
+  { label: 'Movies', items: recs.movies, shape: 'poster' },
+];
+---
+
+<BaseLayout
+  title="About — Pratyush Raj Gupta"
+  description="Who Raj is off the clock — background, hobbies, and what's on the bookshelf."
+>
+  <h1>About</h1>
+
+  <section class="ledger block">
+    <p class="annotation">The longer version</p>
+    <div>
+      <p>
+        I'm Raj. Growing up, I spent a lot of time on my computer creating things like
+        games, pictures, videos, and music. Keeping up with my love for building stuff, I
+        picked up programming pretty early on and became fluent in Java during high
+        school. Deciding that I want to pursue a career in software engineering, I came to
+        Texas A&M for computer science.
+      </p>
+      <p>
+        My first real engineering job was a research position at the Texas Water
+        Observatory, where river sensors were feeding data into CSV files that people
+        edited by hand. I replaced that with a Python and PostgreSQL pipeline, completely
+        eliminating the hours of manual labor previously required. My two internships at
+        Region 10 ESC followed, where I built ETL pipelines, RAG pipelines, web pages, and
+        worked with a lot of other database stuff. This is where backend and data
+        engineering work really clicked for me, and I had found my current niche.
+      </p>
+      <p>
+        I'm at my best in the backend: APIs, pipelines, the parts of a system that have
+        to be correct. If you're building something in that space, reach out.
+      </p>
+    </div>
+  </section>
+
+  <hr class="axis" />
+
+  <section class="ledger block" aria-labelledby="off-hours">
+    <p class="annotation">Off hours</p>
+    <div>
+      <h2 id="off-hours" class="visually-hidden">Hobbies</h2>
+      <p>
+        I built <a href="https://github.com/RajG1511/RaveFinder">a Flask app that finds
+        nearby raves</a> and puts them on my Google Calendar, which tells you roughly how
+        I spend some weekends.
+      </p>
+      <p>
+        I also cook most of my own food and track the macros while I'm at it. The
+        results, numbers included, are on the <a href="/blog/">blog's Cooks feed</a>.
+      </p>
+      <p>
+        Cooking food became an interest after I was introduced to the gym. I've been
+        going for a couple of years now on and off but I really enjoy it. My favorite
+        exercise is definitely preacher curls lol.
+      </p>
+    </div>
+  </section>
+
+  <hr class="axis" />
+
+  <section class="ledger block" aria-labelledby="recs">
+    <p class="annotation">Recommendations</p>
+    <div>
+      <h2 id="recs" class="visually-hidden">Recommendations</h2>
+      <p class="todo">
+        TODO(raj): draft picks so you can see the layout — edit
+        <code>src/data/recs.json</code> and drop real cover art in
+        <code>public/images/recs/</code>.
+      </p>
+      {
+        groups.map((g) => (
+          <div class="rec-row" data-shape={g.shape}>
+            <p class="annotation c-label">{g.label}</p>
+            <div
+              class="c-window"
+              data-carousel
+              tabindex="0"
+              role="group"
+              aria-roledescription="carousel"
+              aria-label={`${g.label} picks — drag or use arrow keys to browse`}
+            >
+              <ul class="c-track">
+                {g.items.map((c) => (
+                  <li class="c-card">
+                    <img src={c.image} alt="" width="200" height={g.shape === 'square' ? 200 : 300} loading="lazy" />
+                    <p class="c-title">{c.title}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <hr class="axis" />
+
+  <section class="ledger block">
+    <p class="annotation">Say hi</p>
+    <p>
+      <a href={`mailto:${site.email}`}>{site.email}</a> — or find me on
+      <a href={site.github}>GitHub</a> and <a href={site.linkedin}>LinkedIn</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<script>
+  // recommendation carousels: each loops endlessly on a slow drift —
+  // press to pause, drag to spin, flick for momentum
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const DRIFT = 25; // px per second
+
+  document.querySelectorAll('[data-carousel]').forEach((win) => {
+    const track = win.querySelector('.c-track');
+    const originals = Array.from(track?.children ?? []);
+    if (!track || originals.length === 0) return;
+
+    const gap = () => parseFloat(getComputedStyle(track).gap) || 0;
+    const setWidth = () =>
+      originals.reduce((w, el) => w + el.getBoundingClientRect().width + gap(), 0);
+
+    // clone whole sets until the track outspans the window twice over,
+    // so the wrap point never shows (Movies only has a handful of items)
+    const fill = () => {
+      while (
+        track.children.length / originals.length < 2 ||
+        track.scrollWidth < win.clientWidth * 2 + setWidth()
+      ) {
+        originals.forEach((el) => track.appendChild(el.cloneNode(true)));
+        if (track.children.length > originals.length * 12) break;
+      }
+    };
+    fill();
+
+    // one offset drives everything: drift, dragging, and fling all write to
+    // it, and it wraps modulo one set-width for the seamless loop
+    let offset = reduced ? 0 : Math.random() * setWidth(); // desync the rows
+    let vel = 0;
+    let dragging = false;
+    let resumeAt = 0;
+    let lastX = 0;
+    let lastMove = 0;
+
+    const apply = () => {
+      const w = setWidth();
+      offset = ((offset % w) + w) % w;
+      track.style.transform = `translateX(${-offset}px)`;
+    };
+
+    let prev = performance.now();
+    const tick = (now) => {
+      const dt = Math.min((now - prev) / 1000, 0.1);
+      prev = now;
+      if (!dragging) {
+        if (Math.abs(vel) > 8) {
+          offset += vel * dt;
+          vel *= Math.pow(0.002, dt); // fling dies out over ~a second
+        } else if (!reduced && now >= resumeAt) {
+          vel = 0;
+          offset += DRIFT * dt;
+        }
+        apply();
+      }
+      requestAnimationFrame(tick);
+    };
+    apply();
+    requestAnimationFrame(tick);
+
+    win.addEventListener('pointerdown', (e) => {
+      dragging = true;
+      vel = 0;
+      lastX = e.clientX;
+      lastMove = performance.now();
+      win.setPointerCapture(e.pointerId);
+      win.classList.add('grabbing');
+    });
+    win.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const now = performance.now();
+      const dx = e.clientX - lastX;
+      offset -= dx;
+      if (now > lastMove) vel = 0.8 * (-dx / (now - lastMove)) * 1000 + 0.2 * vel;
+      lastX = e.clientX;
+      lastMove = now;
+      apply();
+    });
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      win.classList.remove('grabbing');
+      // holding still before letting go means no fling
+      if (reduced || performance.now() - lastMove > 90) vel = 0;
+      resumeAt = performance.now() + 900;
+    };
+    win.addEventListener('pointerup', release);
+    win.addEventListener('pointercancel', release);
+    win.addEventListener('dragstart', (e) => e.preventDefault());
+
+    win.addEventListener('keydown', (e) => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      e.preventDefault();
+      const step = originals[0].getBoundingClientRect().width + gap();
+      offset += e.key === 'ArrowRight' ? step : -step;
+      vel = 0;
+      resumeAt = performance.now() + 1500;
+      apply();
+    });
+
+    window.addEventListener('resize', () => {
+      fill();
+      apply();
+    });
+  });
+</script>
+
+<style>
+  .block {
+    padding-block: 0.6rem;
+  }
+  .todo {
+    color: var(--text-soft);
+    font-style: italic;
+    border-left: 2px solid var(--accent-bright);
+    padding-left: 0.9rem;
+  }
+  .rec-row {
+    margin-top: 1.8rem;
+  }
+  .c-label {
+    margin: 0 0 0.7rem;
+    color: var(--accent);
+  }
+  .c-window {
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y; /* horizontal drags are ours; the page still scrolls */
+    user-select: none;
+    -webkit-user-select: none;
+    /* edge fade: the center card reads at full strength, neighbors dissolve */
+    mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 18%, #000 82%, transparent);
+  }
+  .c-window.grabbing {
+    cursor: grabbing;
+  }
+  .c-window:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+  .c-track {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    will-change: transform;
+  }
+  .c-card {
+    /* sized so an odd count sits in view: ~5 on desktop, 3 at 360px */
+    flex: 0 0 clamp(5.7rem, 16vw, 10.5rem);
+  }
+  /* album covers are square; anime/movie posters keep the 2:3 shape */
+  .rec-row[data-shape='square'] .c-card img {
+    aspect-ratio: 1 / 1;
+  }
+  .c-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    margin-bottom: 0.5rem;
+  }
+  .c-title {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+</style>

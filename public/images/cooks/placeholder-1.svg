@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 400">
+  <rect width="640" height="400" fill="#14291f"/>
+  <circle cx="320" cy="200" r="130" fill="#0e1f18" stroke="#24402f" stroke-width="2"/>
+  <circle cx="320" cy="200" r="100" fill="none" stroke="#24402f" stroke-width="1.5" stroke-dasharray="3 7"/>
+  <path d="M280 180 q40 -40 80 0 q20 25 -10 45 q-30 20 -60 0 q-30 -20 -10 -45z" fill="#5fce82" opacity="0.35"/>
+  <text x="320" y="345" text-anchor="middle" font-family="monospace" font-size="15" letter-spacing="3" fill="#9db8a8">PHOTO GOES HERE</text>
+</svg>

@@ -1,0 +1,250 @@
+---
+// SectionSwitcher: two panels behind tab headings. Switching sends a wiggling
+// vertical line sweeping across while the old panel fades out and the new one
+// fades in beneath it. No JS = both panels stacked.
+interface Props {
+  id: string;
+  labelA: string;
+  labelB: string;
+}
+const { id, labelA, labelB } = Astro.props;
+---
+
+<div class="switcher" data-switcher>
+  <div class="tabs" role="tablist" aria-label={`${labelA} or ${labelB}`}>
+    <button role="tab" id={`${id}-tab-a`} aria-selected="true" aria-controls={`${id}-panel-a`} data-side="a">
+      {labelA}
+    </button>
+    <span class="tab-sep" aria-hidden="true">/</span>
+    <button role="tab" id={`${id}-tab-b`} aria-selected="false" aria-controls={`${id}-panel-b`} data-side="b">
+      {labelB}
+    </button>
+  </div>
+  <div class="stage">
+    <div class="panel" id={`${id}-panel-a`} role="tabpanel" aria-labelledby={`${id}-tab-a`} data-panel="a">
+      <slot name="a" />
+    </div>
+    <div class="panel" id={`${id}-panel-b`} role="tabpanel" aria-labelledby={`${id}-tab-b`} data-panel="b">
+      <slot name="b" />
+    </div>
+    <div class="sweep" data-sweep hidden aria-hidden="true">
+      <svg viewBox="0 0 100 800" preserveAspectRatio="none">
+        <!-- one uneven 400-unit wiggle repeated 3x; extends past the viewBox so the slither loop is seamless -->
+        <g class="wiggle">
+          <path
+            d="M50 0
+               c0 20 -24 40 -24 62 c0 26 32 52 32 78 c0 12 -14 32 -14 46 c0 34 26 62 26 90 c0 18 -30 44 -30 68 c0 16 10 40 10 56
+               c0 20 -24 40 -24 62 c0 26 32 52 32 78 c0 12 -14 32 -14 46 c0 34 26 62 26 90 c0 18 -30 44 -30 68 c0 16 10 40 10 56
+               c0 20 -24 40 -24 62 c0 26 32 52 32 78 c0 12 -14 32 -14 46 c0 34 26 62 26 90 c0 18 -30 44 -30 68 c0 16 10 40 10 56"
+            vector-effect="non-scaling-stroke"
+          />
+        </g>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<script>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('[data-switcher]').forEach((root) => {
+    const stage = root.querySelector('.stage');
+    const sweep = root.querySelector('[data-sweep]');
+    const tabs = root.querySelectorAll('[role="tab"]');
+    const panels = {
+      a: root.querySelector('[data-panel="a"]'),
+      b: root.querySelector('[data-panel="b"]'),
+    };
+    if (!stage || !panels.a || !panels.b) return;
+    panels.b.hidden = true; // JS on: collapse to one visible panel
+    let current = 'a';
+    let busy = false;
+
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const side = tab.getAttribute('data-side');
+        if (!side || side === current || busy) return;
+        tabs.forEach((t) => t.setAttribute('aria-selected', String(t === tab)));
+        const swap = () => {
+          panels[current].hidden = true;
+          panels[side].hidden = false;
+          current = side;
+        };
+        if (reduced || !sweep) {
+          swap();
+          return;
+        }
+        busy = true;
+        // restart the sweep animation; going back to panel A sweeps right-to-left
+        sweep.hidden = false;
+        sweep.classList.remove('run');
+        sweep.classList.toggle('rev', side === 'a');
+        void sweep.offsetWidth;
+        sweep.classList.add('run');
+        stage.classList.add('dim');
+        setTimeout(() => {
+          swap();
+          stage.classList.remove('dim');
+          stage.classList.add('settle');
+        }, 250);
+        setTimeout(() => {
+          stage.classList.remove('settle');
+          sweep.hidden = true;
+          sweep.classList.remove('run');
+          busy = false;
+        }, 640);
+      });
+    });
+  });
+</script>
+
+<style>
+  .tabs {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    margin-bottom: 1.8rem;
+  }
+  .tabs button {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 1.9rem);
+    font-weight: 560;
+    letter-spacing: -0.015em;
+    background: none;
+    border: 0;
+    padding: 0 0 0.25rem;
+    color: var(--text-soft);
+    cursor: pointer;
+    position: relative;
+    transition: color 180ms ease;
+  }
+  .tabs button:hover {
+    color: var(--text);
+  }
+  .tabs button::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 240ms ease;
+  }
+  .tabs button[aria-selected='true'] {
+    color: var(--text);
+  }
+  .tabs button[aria-selected='true']::after {
+    transform: scaleX(1);
+  }
+  .tab-sep {
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 1.9rem);
+    color: var(--line);
+  }
+
+  .stage {
+    position: relative;
+  }
+  .panel {
+    transition: opacity 230ms ease;
+  }
+  .stage.dim .panel {
+    opacity: 0;
+  }
+  .stage.settle .panel {
+    animation: settle 320ms ease both;
+  }
+  @keyframes settle {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* the squiggle: a wiggling vertical line that sweeps across the stage */
+  .sweep {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .sweep svg {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 90px;
+    left: -20%;
+    filter: drop-shadow(0 0 10px var(--accent)) drop-shadow(0 0 22px color-mix(in srgb, var(--accent) 55%, transparent));
+  }
+  .sweep.run svg {
+    animation: sweep 600ms cubic-bezier(0.45, 0.1, 0.45, 0.9) forwards;
+  }
+  .sweep.run.rev svg {
+    animation-name: sweep-rev;
+  }
+  /* the wave itself travels upward along the line while the group sways sideways */
+  .sweep path {
+    fill: none;
+    stroke: var(--accent-bright);
+    stroke-width: 3;
+    stroke-linecap: round;
+    animation: slither 380ms linear infinite;
+  }
+  .sweep .wiggle {
+    animation: squirm 560ms ease-in-out infinite;
+  }
+  @keyframes sweep {
+    from {
+      left: -20%;
+    }
+    to {
+      left: 108%;
+    }
+  }
+  @keyframes sweep-rev {
+    from {
+      left: 108%;
+    }
+    to {
+      left: -20%;
+    }
+  }
+  @keyframes slither {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(-400px); /* one full repeat of the wiggle, so the loop is seamless */
+    }
+  }
+  /* uneven side-to-side sway so the squirm never looks metronomic */
+  @keyframes squirm {
+    0% {
+      transform: translateX(-12px);
+    }
+    30% {
+      transform: translateX(9px);
+    }
+    55% {
+      transform: translateX(-15px);
+    }
+    80% {
+      transform: translateX(13px);
+    }
+    100% {
+      transform: translateX(-12px);
+    }
+  }
+
+  /* no-JS: both panels visible, stacked */
+  .panel + .panel {
+    margin-top: 2rem;
+  }
+  .panel[hidden] {
+    display: none;
+  }
+</style>

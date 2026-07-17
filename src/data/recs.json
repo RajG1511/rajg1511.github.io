@@ -1,0 +1,45 @@
+{
+  "_note": "TODO(raj): DRAFT picks so you can see the layout. Swap titles and point image at real cover art in public/images/recs/.",
+  "music": [
+    { "title": "Thinking About You", "image": "/images/recs/music/thinkingaboutyou.jpg" },
+    { "title": "I Miss You", "image": "/images/recs/music/imissyou.jpg" },
+    { "title": "I Wonder", "image": "/images/recs/music/iwonder.png" },
+    { "title": "Language", "image": "/images/recs/music/language.jpg" },
+    { "title": "Weekend Friend", "image": "/images/recs/music/weekendfriend.jpg" },
+    { "title": "Creep", "image": "/images/recs/music/creep.png" },
+    { "title": "Cherry Waves", "image": "/images/recs/music/cherrywaves.jpg" },
+    { "title": "Cinema", "image": "/images/recs/music/cinema.jpg" },
+    { "title": "Stay", "image": "/images/recs/music/stay.jpg" },
+    { "title": "Good Days", "image": "/images/recs/music/gooddays.png" },
+    { "title": "Sunny Day", "image": "/images/recs/music/sunnyday.png" },
+    { "title": "Bags", "image": "/images/recs/music/bags.jpg" },
+    { "title": "Jungle", "image": "/images/recs/music/jungle.jpg" },
+    { "title": "Latch", "image": "/images/recs/music/latch.jpg" },
+    { "title": "I tooka pill in ibiza", "image": "/images/recs/music/itookapillinibiza.jpg" },
+    { "title": "Still Into You", "image": "/images/recs/music/stillintoyou.jpg" },
+    { "title": "Check", "image": "/images/recs/music/check.jpg" },
+    { "title": "Thinking Bout You", "image": "/images/recs/music/thinkingboutyou.jpg" }
+    
+  ],
+  "anime": [
+    { "title": "Naruto", "image": "/images/recs/anime/naruto.jpg" },
+    { "title": "Hajime no Ippo", "image": "/images/recs/anime/hajimenoippo.jpg" },
+    { "title": "One Piece", "image": "/images/recs/anime/onepiece.jpg" },
+    { "title": "Great Teacher Onizuka", "image": "/images/recs/anime/gto.jpg" },
+    { "title": "Vinland Saga", "image": "/images/recs/anime/vinlandsaga.jpg" },
+    { "title": "Akira", "image": "/images/recs/anime/akira.jpg" },
+    { "title": "Diamond no Ace", "image": "/images/recs/anime/diamondnoace.jpg" },
+    { "title": "Durarara!!", "image": "/images/recs/anime/durarara.jpg" },
+    { "title": "JoJo's Bizarre Adventure", "image": "/images/recs/anime/jojos.jpg" },
+    { "title": "Mob Psycho 100", "image": "/images/recs/anime/mobpsycho.jpg" },
+    { "title": "Perfect Blue", "image": "/images/recs/anime/perfectblue.jpg" },
+    { "title": "Spirited Away", "image": "/images/recs/anime/spiritedaway.jpg" }
+    
+  ],
+  "movies": [
+    { "title": "Interstellar", "image": "/images/recs/movie.svg" },
+    { "title": "Whiplash", "image": "/images/recs/movie.svg" },
+    { "title": "Spider-Man: Into the Spider-Verse", "image": "/images/recs/movie.svg" },
+    { "title": "The Social Network", "image": "/images/recs/movie.svg" }
+  ]
+}

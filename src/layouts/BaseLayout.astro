@@ -1,0 +1,159 @@
+---
+// BaseLayout: document shell — head/meta/OG, header, footer, skip link.
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import site from '../data/site.json';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0e1f18" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.shortName} — blog`} href={new URL('rss.xml', Astro.site)} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href="/fonts/bricolage-grotesque-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/atkinson-hyperlegible-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/ibm-plex-mono-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.shortName} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div id="cursor" aria-hidden="true"></div>
+    <SiteHeader />
+    <main id="main" class="page">
+      <slot />
+    </main>
+    <SiteFooter />
+    <script>
+      // marks JS as available so .reveal elements start hidden (no-JS users see everything)
+      document.documentElement.classList.add('js');
+
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // scroll reveal: fade sections in once as they enter the viewport
+      const els = document.querySelectorAll('.reveal');
+      if (!reduced && 'IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const en of entries) {
+              if (en.isIntersecting) {
+                en.target.classList.add('in');
+                io.unobserve(en.target);
+              }
+            }
+          },
+          { threshold: 0.12 }
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('in'));
+      }
+
+      // custom cursor ring, desktop pointers only
+      const cursor = document.getElementById('cursor');
+      if (cursor && window.matchMedia('(pointer: fine)').matches && !reduced) {
+        let x = -100, y = -100, cx = -100, cy = -100;
+        window.addEventListener('mousemove', (e) => {
+          x = e.clientX;
+          y = e.clientY;
+          cursor.classList.add('on');
+        });
+        const loop = () => {
+          cx += (x - cx) * 0.2;
+          cy += (y - cy) * 0.2;
+          cursor.style.transform = `translate(${cx}px, ${cy}px)`;
+          requestAnimationFrame(loop);
+        };
+        loop();
+        document.addEventListener('mouseover', (e) => {
+          const t = e.target instanceof Element ? e.target : null;
+          cursor.classList.toggle('big', !!t?.closest('a, button'));
+        });
+      }
+
+      // click ripples: a burst of rings. Clipped to the clicked element when it's
+      // interactive, otherwise to the page's content column, so rings vanish at the
+      // margins like they slid behind something.
+      if (!reduced) {
+        document.addEventListener('pointerdown', (e) => {
+          if (e.button !== 0) return;
+          const t = e.target instanceof Element ? e.target : null;
+          const target = t?.closest('a, button, article');
+          const wrap = document.createElement('div');
+          wrap.className = 'ripple-wrap';
+
+          let rect = null;
+          let rounded = '';
+          if (target) {
+            rect = target.getBoundingClientRect();
+            rounded = ' round 10px';
+          } else {
+            const main = document.querySelector('main.page');
+            if (main) {
+              const m = main.getBoundingClientRect();
+              rect = { top: 0, bottom: window.innerHeight, left: m.left, right: m.right };
+            }
+          }
+          if (rect) {
+            const top = Math.max(0, rect.top);
+            const right = Math.max(0, window.innerWidth - rect.right);
+            const bottom = Math.max(0, window.innerHeight - rect.bottom);
+            const left = Math.max(0, rect.left);
+            wrap.style.clipPath = `inset(${top}px ${right}px ${bottom}px ${left}px${rounded})`;
+          }
+
+          const rings = 3;
+          for (let i = 0; i < rings; i++) {
+            const dot = document.createElement('div');
+            dot.className = target && i === 0 ? 'ripple hit' : 'ripple';
+            dot.style.left = `${e.clientX}px`;
+            dot.style.top = `${e.clientY}px`;
+            dot.style.animationDelay = `${i * 110}ms`;
+            wrap.appendChild(dot);
+          }
+          document.body.appendChild(wrap);
+          setTimeout(() => wrap.remove(), 700 + rings * 110);
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .skip {
+    position: absolute;
+    left: -100vw;
+    top: 0.5rem;
+    background: var(--text);
+    color: var(--bg);
+    padding: 0.4rem 0.8rem;
+    z-index: 10;
+  }
+  .skip:focus-visible {
+    left: 0.5rem;
+  }
+  main {
+    min-height: 60vh;
+    padding-block: 1rem 4rem;
+  }
+</style>

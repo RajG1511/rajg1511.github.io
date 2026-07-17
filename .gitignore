@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+
+# local-only meta docs — keep out of the public repo
+# (leading / so public/docs/ still ships with the site)
+/CLAUDE.md
+/PROMPT.md
+/DESIGN.md
+/CONTENT.md
+/CONTRIBUTING.md
+/README.md
+/Pratyush_Gupta_Resume_New.md
+/docs/
+/_templates/

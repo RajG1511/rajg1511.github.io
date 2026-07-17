@@ -1,0 +1,324 @@
+---
+// Home: split identity hero, experience timeline, featured project cards, "currently".
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SectionSwitcher from '../components/SectionSwitcher.astro';
+import site from '../data/site.json';
+import currently from '../data/currently.json';
+import experience from '../data/experience.json';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft && data.featured))
+  .sort((a, b) => a.data.order - b.data.order);
+const [flagship, ...rest] = projects;
+const jobs = experience.filter((j) => !j.leadership);
+---
+
+<BaseLayout
+  title={`${site.name} — software engineer`}
+  description={site.tagline}
+>
+  <section class="hero">
+    <div class="intro">
+      <p class="annotation kicker rise" style="--d: 0">{site.titleLine}</p>
+      <h1 class="rise" style="--d: 1">Pratyush<br />Raj Gupta</h1>
+      <p class="tagline rise" style="--d: 2">{site.tagline}</p>
+      <ul class="social rise" style="--d: 3" aria-label="Profiles and contact">
+        <li>
+          <a href={site.github}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+            GitHub
+          </a>
+        </li>
+        <li>
+          <a href={site.linkedin}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${site.email}`}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>
+            Email
+          </a>
+        </li>
+        <li>
+          <a href={site.resume}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+            Résumé
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="portrait rise" style="--d: 2">
+      <img
+        src="/headshot.jpg"
+        alt="Portrait of Pratyush Raj Gupta"
+        width="880"
+        height="1100"
+        fetchpriority="high"
+      />
+    </div>
+  </section>
+
+  <section aria-label="Experience and featured projects" class="section reveal">
+    <SectionSwitcher id="home-switch" labelA="Experience" labelB="Featured projects">
+      <div slot="a">
+        <ol class="timeline">
+          {
+            jobs.map((job) => (
+              <li class="tl-item">
+                <div class="tl-dot" aria-hidden="true" />
+                <p class="annotation">{job.dates}</p>
+                <div>
+                  <h3>{job.role} · {job.org}</h3>
+                  <p class="tl-summary">{job.summary}</p>
+                  <p class="pills-row">
+                    {job.tech.slice(0, 4).map((t) => (
+                      <span class="pill">{t}</span>
+                    ))}
+                  </p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+        <p class="panel-foot"><a class="annotation head-link" href="/work/">Full details →</a></p>
+      </div>
+      <div slot="b">
+        <div class="grid">
+          {flagship && <ProjectCard project={flagship} wide />}
+          {rest.map((p) => <ProjectCard project={p} />)}
+        </div>
+        <p class="panel-foot"><a class="annotation head-link" href="/work/">All projects →</a></p>
+      </div>
+    </SectionSwitcher>
+  </section>
+
+  <section aria-labelledby="currently" class="section reveal">
+    <h2 id="currently">Currently</h2>
+    <dl class="now">
+      <div><dt class="annotation">Building</dt><dd>{currently.building}</dd></div>
+      <div><dt class="annotation">Reading</dt><dd>{currently.reading}</dd></div>
+      <div><dt class="annotation">Listening</dt><dd>{currently.listening}</dd></div>
+    </dl>
+  </section>
+</BaseLayout>
+
+<style>
+  /* hero entrance: staggered rise on load, CSS only */
+  .rise {
+    animation: rise 650ms cubic-bezier(0.2, 0.6, 0.2, 1) both;
+    animation-delay: calc(var(--d) * 110ms);
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rise {
+      animation: none;
+    }
+  }
+
+  .hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: center;
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) clamp(2rem, 5vw, 4rem);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    right: -12%;
+    width: 42rem;
+    height: 42rem;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--accent) 11%, transparent),
+      transparent 62%
+    );
+    pointer-events: none;
+    z-index: -1;
+  }
+  @media (min-width: 52rem) {
+    .hero {
+      grid-template-columns: minmax(0, 1.4fr) minmax(15rem, 1fr);
+      gap: clamp(2.5rem, 6vw, 5rem);
+    }
+  }
+  .kicker {
+    color: var(--accent);
+    margin-bottom: 1.1rem;
+  }
+  h1 {
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    font-weight: 640;
+    margin-bottom: 0.35em;
+  }
+  .tagline {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    max-width: 48ch;
+    color: var(--text-soft);
+  }
+
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    list-style: none;
+    margin: 1.8rem 0 0;
+    padding: 0;
+  }
+  .social a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    text-decoration: none;
+    transition: color 140ms ease;
+  }
+  .social a:hover {
+    color: var(--accent-bright);
+  }
+  .social svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .portrait {
+    position: relative;
+    max-width: 24rem;
+    justify-self: center;
+  }
+  .portrait::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translate(14px, 14px);
+    border: 1.5px solid var(--accent);
+    border-radius: 6px;
+    z-index: 0;
+  }
+  .portrait img {
+    position: relative;
+    z-index: 1;
+    display: block;
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    filter: saturate(0.92);
+  }
+
+  .section {
+    padding-block: clamp(2rem, 5vw, 3.5rem);
+  }
+  .head-link {
+    color: var(--accent);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .head-link:hover {
+    color: var(--accent-bright);
+  }
+  .panel-foot {
+    margin: 1.4rem 0 0;
+  }
+
+  /* experience: vertical connector with glowing dots */
+  .timeline {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    border-left: 1px solid var(--line);
+  }
+  .tl-item {
+    position: relative;
+    padding: 0 0 2rem 1.7rem;
+    display: grid;
+    gap: 0.25rem 2rem;
+  }
+  .tl-item:last-child {
+    padding-bottom: 0.4rem;
+  }
+  @media (min-width: 68rem) {
+    .tl-item {
+      grid-template-columns: 11rem minmax(0, 1fr);
+    }
+  }
+  .tl-dot {
+    position: absolute;
+    left: -5px;
+    top: 0.5rem;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+    transition: box-shadow 200ms ease;
+  }
+  .tl-item:hover .tl-dot {
+    box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent);
+  }
+  .tl-item .annotation {
+    margin: 0;
+    line-height: 1.9;
+  }
+  .tl-item h3 {
+    margin-bottom: 0.2rem;
+  }
+  .tl-summary {
+    margin: 0 0 0.6rem;
+    color: var(--text-soft);
+  }
+  .pills-row {
+    margin: 0;
+    line-height: 1;
+  }
+
+  /* featured projects: flagship spans the row, the rest sit side by side */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+  @media (min-width: 52rem) {
+    .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .now {
+    margin: 0;
+    display: grid;
+    gap: 0.9rem;
+  }
+  .now div {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+  .now dd {
+    margin: 0;
+  }
+</style>

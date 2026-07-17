@@ -1,0 +1,73 @@
+---
+// Project detail page: frontmatter facts in the margin, "how it works" body.
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { title, summary, dates, stack, repo, demo } = project.data;
+const { Content } = await render(project);
+---
+
+<BaseLayout title={`${title} — Pratyush Raj Gupta`} description={summary}>
+  <article>
+    <header>
+      <p class="annotation">{dates}</p>
+      <h1>{title}</h1>
+      <p class="summary">{summary}</p>
+      <p class="meta annotation">
+        {stack.join(' · ')}
+        {repo && <> · <a href={repo}>repo</a></>}
+        {demo && <> · <a href={demo}>demo</a></>}
+      </p>
+    </header>
+    <hr class="axis" />
+    <div class="prose">
+      <Content />
+    </div>
+    <p class="back"><a href="/work/">← Back to the project log</a></p>
+  </article>
+</BaseLayout>
+
+<style>
+  header .annotation {
+    margin-bottom: 0.6rem;
+  }
+  .summary {
+    font-size: 1.15rem;
+    color: var(--text-soft);
+    max-width: 52ch;
+  }
+  .meta {
+    line-height: 2;
+  }
+  .meta a {
+    color: var(--accent);
+  }
+  .prose :global(h2) {
+    margin-top: 2.2rem;
+  }
+  .prose :global(ul),
+  .prose :global(ol) {
+    padding-left: 1.1rem;
+  }
+  .prose :global(img) {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin: 1.6rem 0;
+    background: #fff;
+    padding: 0.5rem;
+  }
+  .prose :global(li) {
+    max-width: var(--measure);
+    margin-bottom: 0.3rem;
+  }
+  .back {
+    margin-top: 3rem;
+  }
+</style>
