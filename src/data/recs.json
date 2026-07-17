@@ -1,5 +1,4 @@
 {
-  "_note": "TODO(raj): 'Sunny Day' still needs its artist filled in.",
   "music": [
     { "title": "Thinking About You", "artist": "Calvin Harris", "image": "/images/recs/music/thinkingaboutyou.jpg" },
     { "title": "I Miss You", "artist": "blink-182", "image": "/images/recs/music/imissyou.jpg" },
@@ -8,10 +7,10 @@
     { "title": "Weekend Friend", "artist": "Goth Babe", "image": "/images/recs/music/weekendfriend.jpg" },
     { "title": "Creep", "artist": "Radiohead", "image": "/images/recs/music/creep.png" },
     { "title": "Cherry Waves", "artist": "Deftones", "image": "/images/recs/music/cherrywaves.jpg" },
-    { "title": "Cinema", "artist": "Benny Benassi", "image": "/images/recs/music/cinema.jpg" },
+    { "title": "Cinema", "artist": "Skrillex, Benny Benassi", "image": "/images/recs/music/cinema.jpg" },
     { "title": "Stay", "artist": "FISHER", "image": "/images/recs/music/stay.jpg" },
     { "title": "Good Days", "artist": "SZA", "image": "/images/recs/music/gooddays.png" },
-    { "title": "Sunny Day", "artist": "", "image": "/images/recs/music/sunnyday.png" },
+    { "title": "Sunny Day", "artist": "Beabadoobee", "image": "/images/recs/music/sunnyday.png" },
     { "title": "Bags", "artist": "Clairo", "image": "/images/recs/music/bags.jpg" },
     { "title": "Jungle", "artist": "Drake", "image": "/images/recs/music/jungle.jpg" },
     { "title": "Latch", "artist": "Disclosure", "image": "/images/recs/music/latch.jpg" },
