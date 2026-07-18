@@ -7,6 +7,8 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://rajg1511.github.io',
   output: 'static',
+  // Preload pages when their links enter the viewport so clicks feel instant.
+  prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
   integrations: [sitemap()],
   markdown: {
     shikiConfig: { theme: 'github-dark' },
